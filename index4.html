@@ -6,6 +6,29 @@
     <META NAME="Keywords" CONTENT="">
     <META NAME="Description" CONTENT="">
     <style>
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #overlay-img {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        #overlay {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #fff;
+          text-align: center;
+          pointer-events: none;
+          z-index: 1;
+        }
         canvas {
             position: absolute;
             left: 0;
@@ -25,18 +48,14 @@
           color: #fff;
           text-align: center;
           pointer-events: none;
-          z-index: 1;
+          z-index: 999;
         }
         #overlay img {
-          max-width: 40vw;
-          max-height: 40vw;
-          aspect-ratio: 1/1;
-          object-fit: cover;
+          max-width: 60vw;
+          max-height: 40vh;
           display: block;
           margin: 0 auto 0.75rem;
           border-radius: 8px;
-          z-index: 1;
-          position: relative;
         }
         #overlay .overlay-text {
           font-family: Arial, sans-serif;
@@ -46,17 +65,37 @@
         /* fade transition used when switching pages */
         .fade { transition: opacity 1s ease; opacity: 1; }
         .fade.hidden { opacity: 0; }
+
+        @media (max-width: 768px) {
+            #overlay {
+                width: 90%;
+                padding: 1.5rem;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            #overlay img {
+                max-width: 80vw;
+                max-height: 80vw;
+                border-radius: 12px;
+            }
+
+            #overlay .overlay-text {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </HEAD>
 
 <BODY style=" background-color: #000;" data-overlay-img="image/love4.jpg" data-overlay-text="Forever">
 
-<canvas id="heart"></canvas>
-
-<div id="overlay" class="fade">
-  <img id="overlay-img" src="image/love4.jpg" alt="">
-  <div class="overlay-text" id="overlay-text">Forever</div>
+<div id="overlay" class="fade" style="background: rgba(0,0,0,0.35); padding: 2rem 2.5rem; border-radius: 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.4); top: 20%; left: 50%; transform: translate(-50%, 0);">
+    <img id="overlay-img" src="image/love4.jpg" alt="" style="box-shadow: 0 2px 16px rgba(0,0,0,0.45);">
+    <div class="overlay-text" id="overlay-text">Forever</div>
 </div>
+
+<canvas id="heart"></canvas>
 
 <script>
     window.requestAnimationFrame =
