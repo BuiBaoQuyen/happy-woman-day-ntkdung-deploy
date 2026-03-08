@@ -5,6 +5,7 @@
     <META NAME="Author" CONTENT="">
     <META NAME="Keywords" CONTENT="">
     <META NAME="Description" CONTENT="">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         #overlay {
           position: absolute;
@@ -46,9 +47,12 @@
           position: fixed;
         }
         #overlay .overlay-text {
-          font-family: Arial, sans-serif;
-          font-size: 2rem;
-          text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+          font-family: 'Playfair Display', serif;
+          font-size: 2.5rem;
+          font-weight: 700;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+          color: #FFB6C1;
+          letter-spacing: 2px;
         }
         /* fade transition used when switching pages */
         .fade { transition: opacity 1s ease; opacity: 1; }
@@ -70,13 +74,14 @@
             }
 
             #overlay .overlay-text {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
+                letter-spacing: 1px;
             }
         }
     </style>
 </HEAD>
 
-<BODY style=" background-color: #000;" data-overlay-img="image/love4.jpg" data-overlay-text="Forever">
+<BODY style=" background-color: #000;" data-overlay-img="image/love4.jpg" data-overlay-text="Sớm sinh quý tử">
 
 <div id="overlay" class="fade" style="background: rgba(0,0,0,0.35); padding: 2rem 2.5rem; border-radius: 16px; box-shadow: 0 4px 32px rgba(0,0,0,0.4); top: 20%; left: 50%; transform: translate(-50%, 0);">
     <img id="overlay-img" src="image/love4.jpg" alt="" style="box-shadow: 0 2px 16px rgba(0,0,0,0.45);">
