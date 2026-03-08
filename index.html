@@ -57,21 +57,23 @@ canvas {
 /* Navigation button */
 #nextBtn {
     position: fixed;
-    bottom: 50px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 12px 30px;
+    padding: 15px 40px;
     background: linear-gradient(135deg, #FFB6C1, #FF69B4);
     color: white;
     border: none;
     border-radius: 50px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
     transition: all 0.3s ease;
     z-index: 1000;
+    min-width: 180px;
+    text-align: center;
 }
 
 #nextBtn:hover {
@@ -81,6 +83,15 @@ canvas {
 
 #nextBtn:active {
     transform: translateX(-50%) scale(0.98);
+}
+
+@media (max-width: 768px) {
+    #nextBtn {
+        bottom: 25px;
+        padding: 12px 35px;
+        font-size: 1rem;
+        min-width: 160px;
+    }
 }
         @media (max-width: 768px) {
             #overlay {
@@ -351,46 +362,82 @@ var ParticlePool = (function() {
 })(document.getElementById('pinkboard'));
   </script>
 
-  <!-- DVD screensaver effect -->
+  <!-- DVD screensaver effect - Optimized Algorithm -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
         const overlayImg = document.getElementById('overlay-img');
         const overlay = document.getElementById('overlay');
         
-        // Get image dimensions
+        // Cache viewport dimensions for better performance
+        let viewportWidth = window.innerWidth;
+        let viewportHeight = window.innerHeight;
+        let imgWidth = 0;
+        let imgHeight = 0;
+        
+        // Update viewport on resize
+        window.addEventListener('resize', function() {
+            viewportWidth = window.innerWidth;
+            viewportHeight = window.innerHeight;
+        });
+        
         overlayImg.onload = function() {
+            // Get actual rendered dimensions
+            imgWidth = overlayImg.getBoundingClientRect().width;
+            imgHeight = overlayImg.getBoundingClientRect().height;
             startDVDAnimation();
         };
         
-        // If image is already cached/loaded
         if (overlayImg.complete) {
-            startDVDAnimation();
+            // For cached images
+            setTimeout(function() {
+                imgWidth = overlayImg.getBoundingClientRect().width;
+                imgHeight = overlayImg.getBoundingClientRect().height;
+                startDVDAnimation();
+            }, 10);
         }
         
         function startDVDAnimation() {
-            let xPos = Math.random() * (window.innerWidth - overlayImg.width);
-            let yPos = Math.random() * (window.innerHeight - overlayImg.height);
+            // Calculate valid boundaries (image must stay within viewport)
+            const maxX = Math.max(0, viewportWidth - imgWidth);
+            const maxY = Math.max(0, viewportHeight - imgHeight);
+            
+            // Initialize position with safe boundaries
+            let xPos = Math.random() * maxX;
+            let yPos = Math.random() * maxY;
+            
+            // Velocity: ±2 to ±4 pixels per frame
             let xSpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
             let ySpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
 
             function moveImage() {
-                const imgWidth = overlayImg.offsetWidth;
-                const imgHeight = overlayImg.offsetHeight;
-                const containerWidth = window.innerWidth;
-                const containerHeight = window.innerHeight;
-
+                // Recalculate boundaries (in case window resized)
+                const boundaries = {
+                    minX: 0,
+                    maxX: Math.max(0, viewportWidth - imgWidth),
+                    minY: 0,
+                    maxY: Math.max(0, viewportHeight - imgHeight)
+                };
+                
                 // Update position
                 xPos += xSpeed;
                 yPos += ySpeed;
 
-                // Bounce off edges
-                if (xPos <= 0 || xPos + imgWidth >= containerWidth) {
-                    xSpeed *= -1;
-                    xPos = Math.max(0, Math.min(xPos, containerWidth - imgWidth));
+                // Horizontal boundary check and bounce
+                if (xPos <= boundaries.minX) {
+                    xPos = boundaries.minX;
+                    xSpeed = Math.abs(xSpeed); // Bounce right
+                } else if (xPos >= boundaries.maxX) {
+                    xPos = boundaries.maxX;
+                    xSpeed = -Math.abs(xSpeed); // Bounce left
                 }
-                if (yPos <= 0 || yPos + imgHeight >= containerHeight) {
-                    ySpeed *= -1;
-                    yPos = Math.max(0, Math.min(yPos, containerHeight - imgHeight));
+
+                // Vertical boundary check and bounce
+                if (yPos <= boundaries.minY) {
+                    yPos = boundaries.minY;
+                    ySpeed = Math.abs(ySpeed); // Bounce down
+                } else if (yPos >= boundaries.maxY) {
+                    yPos = boundaries.maxY;
+                    ySpeed = -Math.abs(ySpeed); // Bounce up
                 }
 
                 // Apply new position
