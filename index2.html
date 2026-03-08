@@ -78,6 +78,35 @@
         .fade { transition: opacity 1s ease; opacity: 1; }
         .fade.hidden { opacity: 0; }
 
+        /* Navigation button */
+        #nextBtn {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #nextBtn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+        }
+
+        #nextBtn:active {
+            transform: translateX(-50%) scale(0.98);
+        }
+
         @media (max-width: 768px) {
             #overlay {
                 width: 90%;
@@ -112,6 +141,8 @@
       <img id="overlay-img" src="image/love2.jpg" alt="">
       <div class="overlay-text" id="overlay-text">Chúc bạn đầu b răng l</div>
     </div>
+
+    <button id="nextBtn">Tiếp tục →</button>
 
     <script>
         /*
@@ -430,16 +461,15 @@
     });
   </script>
 
-  <!-- automatic page rotation: 10s per page, fade then navigate -->
+  <!-- Navigation with button -->
   <script>
   (function(){
     var pages = ['index.html','index2.html','index3.html','index4.html']; // order of pages
-    var displayDuration = 6000; // ms to show before starting transition (6s)
-    var transitionMs = 1000; // ms used by fade before navigation
 
     var overlay = document.getElementById('overlay');
     var img = document.getElementById('overlay-img');
     var txt = document.getElementById('overlay-text');
+    var nextBtn = document.getElementById('nextBtn');
 
     // determine current file name
     var currentFile = location.pathname.split('/').pop() || 'index2.html';
@@ -454,13 +484,13 @@
     img.src = imgSrc;
     txt.textContent = overlayText;
 
-    // wait, fade overlay, then navigate
-    setTimeout(function(){
+    // Button click handler
+    nextBtn.addEventListener('click', function() {
       overlay.classList.add('hidden');
       setTimeout(function(){
         window.location.href = nextPage;
-      }, transitionMs);
-    }, displayDuration);
+      }, 1000);
+    });
   })();
   </script>
 </BODY>
