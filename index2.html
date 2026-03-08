@@ -62,19 +62,14 @@
           max-width: 60vw;
           max-height: 40vh;
           display: block;
+          margin: 0 auto 0.75rem;
           border-radius: 8px;
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          z-index: 10;
-          margin: 0 !important;
-          transform: none !important;
+          position: fixed;
         }
         #overlay .overlay-text {
           font-family: Arial, sans-serif;
           font-size: 2rem;
           text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-          display: none;
         }
         .fade { transition: opacity 1s ease; opacity: 1; }
         .fade.hidden { opacity: 0; }
@@ -86,6 +81,12 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
+            }
+
+            #overlay img {
+                max-width: 80vw;
+                max-height: 80vw;
+                border-radius: 12px;
             }
 
             #overlay .overlay-text {
@@ -368,67 +369,61 @@
         })(document.getElementById('pinkboard'));
     </script>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const overlayImg = document.getElementById('overlay-img');
-          
-          function startDVDAnimation() {
-              // Wait for image to fully load and get correct dimensions
-              setTimeout(function() {
-                  const imgWidth = overlayImg.offsetWidth;
-                  const imgHeight = overlayImg.offsetHeight;
-                  
-                  if (imgWidth === 0 || imgHeight === 0) {
-                      // Image not ready yet, try again
-                      startDVDAnimation();
-                      return;
-                  }
+  <!-- DVD screensaver effect -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const overlayImg = document.getElementById('overlay-img');
+        const overlay = document.getElementById('overlay');
+        
+        // Get image dimensions
+        overlayImg.onload = function() {
+            startDVDAnimation();
+        };
+        
+        // If image is already cached/loaded
+        if (overlayImg.complete) {
+            startDVDAnimation();
+        }
+        
+        function startDVDAnimation() {
+            let xPos = Math.random() * (window.innerWidth - overlayImg.width);
+            let yPos = Math.random() * (window.innerHeight - overlayImg.height);
+            let xSpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+            let ySpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
 
-                  let xPos = Math.random() * Math.max(0, window.innerWidth - imgWidth);
-                  let yPos = Math.random() * Math.max(0, window.innerHeight - imgHeight);
-                  let xSpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
-                  let ySpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+            function moveImage() {
+                const imgWidth = overlayImg.offsetWidth;
+                const imgHeight = overlayImg.offsetHeight;
+                const containerWidth = window.innerWidth;
+                const containerHeight = window.innerHeight;
 
-                  function moveImage() {
-                      const containerWidth = window.innerWidth;
-                      const containerHeight = window.innerHeight;
+                // Update position
+                xPos += xSpeed;
+                yPos += ySpeed;
 
-                      // Update position
-                      xPos += xSpeed;
-                      yPos += ySpeed;
+                // Bounce off edges
+                if (xPos <= 0 || xPos + imgWidth >= containerWidth) {
+                    xSpeed *= -1;
+                    xPos = Math.max(0, Math.min(xPos, containerWidth - imgWidth));
+                }
+                if (yPos <= 0 || yPos + imgHeight >= containerHeight) {
+                    ySpeed *= -1;
+                    yPos = Math.max(0, Math.min(yPos, containerHeight - imgHeight));
+                }
 
-                      // Bounce off edges - with margin to keep image fully visible
-                      if (xPos <= 0) {
-                          xPos = 0;
-                          xSpeed = Math.abs(xSpeed);
-                      } else if (xPos + imgWidth >= containerWidth) {
-                          xPos = containerWidth - imgWidth;
-                          xSpeed = -Math.abs(xSpeed);
-                      }
+                // Apply new position
+                overlayImg.style.left = xPos + 'px';
+                overlayImg.style.top = yPos + 'px';
+                overlayImg.style.margin = '0';
+                overlay.style.pointerEvents = 'none';
 
-                      if (yPos <= 0) {
-                          yPos = 0;
-                          ySpeed = Math.abs(ySpeed);
-                      } else if (yPos + imgHeight >= containerHeight) {
-                          yPos = containerHeight - imgHeight;
-                          ySpeed = -Math.abs(ySpeed);
-                      }
+                requestAnimationFrame(moveImage);
+            }
 
-                      // Apply new position
-                      overlayImg.style.left = xPos + 'px';
-                      overlayImg.style.top = yPos + 'px';
-
-                      requestAnimationFrame(moveImage);
-                  }
-
-                  moveImage();
-              }, 200);
-          }
-
-          // Start animation
-          startDVDAnimation();
-      });
-    </script>
+            moveImage();
+        }
+    });
+  </script>
 
   <!-- automatic page rotation: 10s per page, fade then navigate -->
   <script>
