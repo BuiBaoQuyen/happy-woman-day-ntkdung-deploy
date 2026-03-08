@@ -62,29 +62,22 @@
           max-width: 60vw;
           max-height: 40vh;
           display: block;
-          margin: 0 auto 0.75rem;
           border-radius: 8px;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          z-index: 10;
+          margin: 0 !important;
+          transform: none !important;
         }
         #overlay .overlay-text {
           font-family: Arial, sans-serif;
           font-size: 2rem;
           text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+          display: none;
         }
         .fade { transition: opacity 1s ease; opacity: 1; }
         .fade.hidden { opacity: 0; }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        #overlay-img {
-            animation: float 3s ease-in-out infinite;
-        }
 
         @media (max-width: 768px) {
             #overlay {
@@ -95,12 +88,6 @@
                 transform: translate(-50%, -50%);
             }
 
-            #overlay img {
-                max-width: 80vw;
-                max-height: 80vw;
-                border-radius: 12px;
-            }
-
             #overlay .overlay-text {
                 font-size: 1.5rem;
             }
@@ -108,7 +95,7 @@
     </style>
 </HEAD>
 
-<BODY data-overlay-img="image/love2.jpg" data-overlay-text="Thật nhiều sức khoẻ">
+<BODY data-overlay-img="image/love2.jpg" data-overlay-text="Chúc bạn đầu b răng l">
 
     <canvas id="pinkboard">
         <canvas id="pinkboard">
@@ -117,7 +104,7 @@
 
     <div id="overlay" class="fade">
       <img id="overlay-img" src="image/love2.jpg" alt="">
-      <div class="overlay-text" id="overlay-text">Thật nhiều sức khoẻ</div>
+      <div class="overlay-text" id="overlay-text">Chúc bạn đầu b răng l</div>
     </div>
 
     <script>
@@ -379,6 +366,68 @@
                 render();
             }, 10);
         })(document.getElementById('pinkboard'));
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const overlayImg = document.getElementById('overlay-img');
+          
+          function startDVDAnimation() {
+              // Wait for image to fully load and get correct dimensions
+              setTimeout(function() {
+                  const imgWidth = overlayImg.offsetWidth;
+                  const imgHeight = overlayImg.offsetHeight;
+                  
+                  if (imgWidth === 0 || imgHeight === 0) {
+                      // Image not ready yet, try again
+                      startDVDAnimation();
+                      return;
+                  }
+
+                  let xPos = Math.random() * Math.max(0, window.innerWidth - imgWidth);
+                  let yPos = Math.random() * Math.max(0, window.innerHeight - imgHeight);
+                  let xSpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+                  let ySpeed = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+
+                  function moveImage() {
+                      const containerWidth = window.innerWidth;
+                      const containerHeight = window.innerHeight;
+
+                      // Update position
+                      xPos += xSpeed;
+                      yPos += ySpeed;
+
+                      // Bounce off edges - with margin to keep image fully visible
+                      if (xPos <= 0) {
+                          xPos = 0;
+                          xSpeed = Math.abs(xSpeed);
+                      } else if (xPos + imgWidth >= containerWidth) {
+                          xPos = containerWidth - imgWidth;
+                          xSpeed = -Math.abs(xSpeed);
+                      }
+
+                      if (yPos <= 0) {
+                          yPos = 0;
+                          ySpeed = Math.abs(ySpeed);
+                      } else if (yPos + imgHeight >= containerHeight) {
+                          yPos = containerHeight - imgHeight;
+                          ySpeed = -Math.abs(ySpeed);
+                      }
+
+                      // Apply new position
+                      overlayImg.style.left = xPos + 'px';
+                      overlayImg.style.top = yPos + 'px';
+
+                      requestAnimationFrame(moveImage);
+                  }
+
+                  moveImage();
+              }, 200);
+          }
+
+          // Start animation
+          startDVDAnimation();
+      });
     </script>
 
   <!-- automatic page rotation: 10s per page, fade then navigate -->
